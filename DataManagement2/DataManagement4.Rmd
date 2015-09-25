@@ -3,7 +3,6 @@ title: "DataManagement2
 author:
 date: Fall 2015
 output: html_document
----
 
 
 ```{r comment = NA}
