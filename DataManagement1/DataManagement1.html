@@ -1,0 +1,55 @@
+---
+title: "DataManagement1"
+author:
+date: Fall 2015
+output: html_document
+---
+
+```{r comment = NA}
+
+library(PDS)
+library(dplyr)
+NDF <- AddHealth %>% 
+   rename(Absences = H1ED1, HoursofSleep = H1GH51, LastPhyExam = H1GH24, LastMathGrade = H1ED12) %>%
+  select (HoursofSleep, LastPhyExam, LastMathGrade, Absences)
+summary(NDF)
+AddHealth.sub$Absences[AddHealth.sub$Absences == 6] <- NA
+AddHealth.sub$Absences <- factor(AddHealth.sub$Absences,labels=c("never", 1 or 2 times", "3 to 10 times", "more than 10 times", "legitiment skip", "don't know", "not applicable"))
+table(AddHealth.sub$Absences)
+AddHealth.sub$HoursofSleep[AddHealth.sub$HoursofSleep == 96] <- NA
+AddHealth.sub$HoursofSleep <- factor(AddHealth.sub$HoursofSleep,labels=c("range 1 to 20 hours", "don't know"))
+table(AddHealth.sub$HoursofSleep)
+AddHealth.sub$LastPhyExam[AddHealth.sub$LastPhyExam == 6] <- NA
+AddHealth.sub$LastPhyExam <- factor(AddHealth.sub$LastPhyExam,labels=c ("less than 1 year ago", "1 to 2 years ago", "more than 2 years ago", "never", "don't know", "not applicable"))
+table(AddHealth.sub$LastPhyExam)
+AddHealth.sub$LastMathGrade[AddHealth.sub$LastMathGrade == 96] <- NA
+AddHealth.sub$LastMathGrade <- factor(AddHealth.sub$LastMathGrade, labels=c("A","B", "C", "D or lower", "didn't take this subect", "took the subject but it wasn't graded this way", "legitament skip", "dont know"))
+table(AddHealth.sub$LastMathGrade)
+
+library(ggplot2)
+g1 <- ggplot(data = na.omit(AddHealth.sub), aes(Absences)) +
+  geom_bar(fill = c("magenta")) +
+  labs(x = "", y = "Total Number", title = "How many absences have you had?") +
+  theme_bw() + 
+  theme(axis.text.x  = element_text(angle = 75, vjust = 0.5)) 
+g1
+g2 <- ggplot(data = na.omit(OOL.sub), aes(HoursofSleep)) +
+  geom_bar(fill = c("purple")) +
+  labs(x = "", y = "Total Number", title = "On average how many hours of sleep do you get?") +
+  theme_bw() + 
+  theme(axis.text.x  = element_text(angle = 75, vjust = 0.5)) 
+g2
+
+g3 <- ggplot(data = na.omit(OOL.sub), aes(LastPhyExam)) +
+  geom_bar(fill = c("green")) +
+  labs(x = "", y = "Total Number", title = "When was your last physical Exam?") +
+  theme_bw() + 
+  theme(axis.text.x  = element_text(angle = 75, vjust = 0.5)) 
+g3
+g4 <- ggplot(data = na.omit(OOL.sub), aes(LastMathGrade)) +
+  geom_bar(fill = c("red")) +
+  labs(x = "", y = "Total Number", title = "What was your last math grade?") +
+  theme_bw() + 
+  theme(axis.text.x  = element_text(angle = 75, vjust = 0.5)) 
+g4  
+

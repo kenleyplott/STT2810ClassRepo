@@ -1,0 +1,57 @@
+---
+title: "DataManagement1"
+author:
+date: Fall 2015
+output: html_document
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(comment = NA, message = FALSE, warning = FALSE, fig.align = "center")
+library(ggplot2)
+library(descr)
+```
+
+Three categorical variables relevant to student health are H1SU1-H1SU3 from the AddHealth data set. The AddHealth data set is loaded from the PDS package. Using the dplyr package, a new data frame NDF containing only three variables after renaming H1SU1-H1SU3 to Absences, Last physical examination and Last math grade is created.
+
+```{r}
+library(PDS)
+library(dplyr)
+NDF <- AddHealth %>%
+  rename(Absences = H1ED1, HoursofSleep = H1GH51, LastPhyExam = H1GH24, LastMathGrade = H1ED12) %>%  
+  select(Absences, HoursofSleep, LastPhyExam, LastMathGrade)
+head(NDF)
+```
+
+Responses of `9` for question `Absences` are recorded to `NA`
+
+```{r}
+xtabs(~Absences, data = NDF)
+NDF$Absenses[NDF$Absences == 9] <- NA
+xtabs(~Absences, data = NDF)
+NDF$Absences <- factor(NDF$Absences, labels = c("never", "1 or 2 times","3 to 10 times", "more than 10 times", "refused", "legitiment skip", "don't know", "not applicable")
+xtabs(~Absences, data = NDF)
+summary(NDF$Absences)
+freq(NDF$Absences)
+freq(NDF$Absences, main = "How many absences have you had?")
+ggplot(data = NDF, aes(x = Absences, fill = Absences)) + 
+  geom_bar() + 
+  labs(title = "How many absences have you had?", x = "") +
+  theme_bw() +
+  guides(fill = guide_legend(title = "How many absences have you had?"))
+```
+Changing the $y$-axis to percent:
+
+```{r}
+ggplot(data = NDF, aes(x = Absences, y = (..count..)/sum(..count..), fill = Absences)) + 
+  geom_bar() + 
+  labs(title = "How many absences have you had?", x = "") +
+  theme_bw() +
+  guides(fill = guide_legend(title = "How many absences have you had")) +
+  labs(y = "percent")
+```
+
+Another approach to graph the catagorical variables is to use the base fuction `barplot()`.
+```{r}
+barplot(xtabs(~Absences, data = NDF), col = c("green", "red", "orange", "brown"))
+barplot(prop.table(xtabs(~Absences, data = NDF)), col = c("green", "red", "orange", "brown"))
+```
